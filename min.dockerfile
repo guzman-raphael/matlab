@@ -14,7 +14,8 @@ COPY --from=go_tmp /startup /startup
 RUN \
 # Install Core dependencies
   apt-get update && \
-  apt-get install -y unzip libxt6 lsb-release && \
+  # depen (install, min matlab, R2019a, R2016a, R2016a)
+  apt-get install -y unzip libxt6 lsb-release libncurses5-dev libxext6 && \
 # matlab user (muser)
   export uid=3000 gid=3000 && \
   mkdir -p /home/muser && \
@@ -49,13 +50,12 @@ RUN \
   sed -i '/toolbox\/matlab\/maps/d' /home/muser/MATLAB/toolbox/local/pathdef.m && \
   rm -R /home/muser/MATLAB/toolbox/matlab/codetools && \
   sed -i '/toolbox\/matlab\/codetools/d' /home/muser/MATLAB/toolbox/local/pathdef.m && \
-  # rm -R /home/muser/MATLAB/bin/glnxa64/mkl.so && \
+  rm -R /home/muser/MATLAB/bin/glnxa64/mkl.so && \
   rm -R /home/muser/MATLAB/toolbox/shared && \
   sed -i '/toolbox\/shared/d' /home/muser/MATLAB/toolbox/local/pathdef.m && \
   rm -R /home/muser/MATLAB/ui && \
   rm -R /home/muser/MATLAB/examples && \
   sed -i '/examples\//d' /home/muser/MATLAB/toolbox/local/pathdef.m && \
-  # rm -R /home/muser/MATLAB/sys/opengl && \
   rm -R /home/muser/MATLAB/java/jarext/jxbrowser-chromium && \
   rm -R /home/muser/MATLAB/sys/jxbrowser && \
   rm -R /home/muser/MATLAB/toolbox/matlab/datatools || echo "MATLAB ERROR: toolbox/matlab/datatools not found. Skipping..." && \
@@ -70,6 +70,10 @@ RUN \
   sed -i '/toolbox\/matlab\/system/d' /home/muser/MATLAB/toolbox/local/pathdef.m && \
   rm -R /home/muser/MATLAB/toolbox/coder || echo "MATLAB ERROR: toolbox/coder not found. Skipping..." && \
   sed -i '/toolbox\/coder/d' /home/muser/MATLAB/toolbox/local/pathdef.m
+  #R2016a
+  # rm -R /home/muser/MATLAB/sys/opengl && \
+  # rm /home/muser/MATLAB/toolbox/local/hgrc.m && \
+  # rm /home/muser/MATLAB/bin/glnxa64/libmwhg.so 
 #Prepare Activation on boot
 COPY ./activate.ini /home/muser/activate.ini
 
