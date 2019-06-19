@@ -11,14 +11,14 @@ services:
     <<: *R2018b
     build:
       context: .
-      dockerfile: min.dockerfile
-      # dockerfile: gui.dockerfile
+      # dockerfile: min.dockerfile
+      dockerfile: gui.dockerfile
       args:
         MATLAB_VERSION: $MATLAB_VERSION
         MATLAB_FILE_KEY: $MATLAB_FILE_KEY
         PY_VERSION: $PY_VERSION
-    image: raphaelguzman/matlab:${MATLAB_VERSION}-MIN
-    # image: raphaelguzman/matdev:${MATLAB_VERSION}-GUI
+    # image: raphaelguzman/matlab:${MATLAB_VERSION}-MIN
+    image: raphaelguzman/matdev:${MATLAB_VERSION}-GUI
     user: ${MATLAB_UID}:${MATLAB_GID}
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
