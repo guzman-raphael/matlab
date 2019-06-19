@@ -49,7 +49,7 @@ RUN \
   sed -i '/toolbox\/matlab\/maps/d' /home/muser/MATLAB/toolbox/local/pathdef.m && \
   rm -R /home/muser/MATLAB/toolbox/matlab/codetools && \
   sed -i '/toolbox\/matlab\/codetools/d' /home/muser/MATLAB/toolbox/local/pathdef.m && \
-  rm -R /home/muser/MATLAB/bin/glnxa64/mkl.so && \
+  # rm -R /home/muser/MATLAB/bin/glnxa64/mkl.so && \
   rm -R /home/muser/MATLAB/toolbox/shared && \
   sed -i '/toolbox\/shared/d' /home/muser/MATLAB/toolbox/local/pathdef.m && \
   rm -R /home/muser/MATLAB/ui && \
