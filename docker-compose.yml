@@ -1,4 +1,5 @@
-# echo \"$(sed ':a;N;$!ba;s|\t|\\t|g' /github/raphael/matlab-docker-act/licenses/license_R2016a.lic | sed 's| |\\ |g' | sed 's|"|\\"|g' | sed ':a;N;$!ba;s|\n|\\n|g')\" #extract license arg
+# To convert license to env var use this command: 
+# echo \"$(sed ':a;N;$!ba;s|\t|\\t|g' /github/raphael/matlab-docker-act/licenses/license_R2016a.lic | sed 's| |\\ |g' | sed 's|"|\\"|g' | sed ':a;N;$!ba;s|\n|\\n|g')\"
 version: '2.4'
 x-R2018b: &R2018b
   environment:
@@ -18,7 +19,7 @@ services:
         MATLAB_FILE_KEY: $MATLAB_FILE_KEY
         PY_VERSION: $PY_VERSION
     # image: raphaelguzman/matlab:${MATLAB_VERSION}-MIN
-    image: raphaelguzman/matdev:${MATLAB_VERSION}-GUI
+    image: raphaelguzman/matlab:${MATLAB_VERSION}-GUI
     user: ${MATLAB_UID}:${MATLAB_GID}
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw

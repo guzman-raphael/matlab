@@ -54,6 +54,7 @@ RUN \
   rm -R /home/muser/MATLAB/toolbox/shared && \
   sed -i '/toolbox\/shared/d' /home/muser/MATLAB/toolbox/local/pathdef.m && \
   rm -R /home/muser/MATLAB/ui && \
+  sed -i '/ui\//d' /home/muser/MATLAB/toolbox/local/pathdef.m && \
   rm -R /home/muser/MATLAB/examples && \
   sed -i '/examples\//d' /home/muser/MATLAB/toolbox/local/pathdef.m && \
   rm -R /home/muser/MATLAB/java/jarext/jxbrowser-chromium && \

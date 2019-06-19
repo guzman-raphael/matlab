@@ -30,3 +30,8 @@ MATLAB_VERSION=R2018b           `Matlab Version to be build. Must supply COMPLET
 MATLAB_FILE_KEY=xxxxx-xxxxx-xxxxx-xxxxx `Mathworks provided file key along with Mathworks license.` 
 
 PY_VERSION=3.6                  `>= 3.0. Necessary to complete install of Jupyter Notebook with MATLAB kernel (GUI).`
+
+
+## Travis CI Integration
+
+For a reference of how this container may be used in Continuous Integration with Travis, see my repo for [compareVersions.m](https://github.com/guzman-raphael/compareVersions).
