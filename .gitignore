@@ -1,0 +1,5 @@
+installers/
+licenses/
+.env
+old.*
+min_curr.*

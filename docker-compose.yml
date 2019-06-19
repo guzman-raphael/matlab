@@ -1,0 +1,31 @@
+# echo \"$(sed ':a;N;$!ba;s|\t|\\t|g' /github/raphael/matlab-docker-act/licenses/license_R2016a.lic | sed 's| |\\ |g' | sed 's|"|\\"|g' | sed ':a;N;$!ba;s|\n|\\n|g')\" #extract license arg
+version: '2.4'
+x-R2018b: &R2018b
+  environment:
+    - DISPLAY
+    - MATLAB_LICENSE
+    - MATLAB_USER
+    - JUPYTER_PASSWORD=matlab
+services:
+  matlab:
+    <<: *R2018b
+    build:
+      context: .
+      dockerfile: min.dockerfile
+      # dockerfile: gui.dockerfile
+      args:
+        MATLAB_VERSION: $MATLAB_VERSION
+        MATLAB_FILE_KEY: $MATLAB_FILE_KEY
+        PY_VERSION: $PY_VERSION
+    image: raphaelguzman/matlab:${MATLAB_VERSION}-MIN
+    # image: raphaelguzman/matdev:${MATLAB_VERSION}-GUI
+    user: ${MATLAB_UID}:${MATLAB_GID}
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    ports:
+      - "8888:8888"
+    mac_address: $MATLAB_HOSTID
+    command: > 
+      /bin/bash -c "
+        jupyter notebook || tail -f /dev/null;
+      "
