@@ -6,7 +6,7 @@ x-R2018b: &R2018b
     - DISPLAY
     - MATLAB_LICENSE
     - MATLAB_USER
-    - JUPYTER_PASSWORD=datajoint
+    - JUPYTER_PASSWORD=matlab
 services:
   matlab:
     <<: *R2018b
