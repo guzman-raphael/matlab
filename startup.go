@@ -10,6 +10,7 @@ import (
 func main() {
 	var user, uid, gid string = os.Getenv("MATLAB_USER"), os.Args[1], os.Args[2]
 	var home string = "/home/" + user
+	var matlab_home string = os.Getenv("MATLAB_INSTALLED_ROOT")
 
 	pass_byte, _ := ioutil.ReadFile("/etc/passwd")
 	pass_str := string(pass_byte)
@@ -31,5 +32,6 @@ func main() {
 	gid_int, _ := strconv.Atoi(gid)
 	os.Chown(home, uid_int, gid_int)
 	os.Chown(home + "/.local", uid_int, gid_int)
-	os.Chown(home + "/activate.ini", uid_int, gid_int)
+	os.Chown(home + "/.activate.ini", uid_int, gid_int)
+	os.Chown(matlab_home + "/toolbox/local/pathdef.m", uid_int, gid_int)
 }

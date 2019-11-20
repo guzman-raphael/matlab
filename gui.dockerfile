@@ -10,6 +10,8 @@ RUN cd / && go build startup.go
 FROM python:${PY_VERSION}-slim-stretch as mat_build
 ARG  MATLAB_VERSION
 ARG  MATLAB_FILE_KEY
+ARG  MATLAB_INSTALLED_ROOT
+ENV  MATLAB_INSTALLED_ROOT=$MATLAB_INSTALLED_ROOT
 ENV  MATLAB_VERSION=$MATLAB_VERSION
 COPY ./entrypoint.sh /entrypoint.sh
 COPY --from=go_tmp /startup /startup
@@ -43,14 +45,15 @@ COPY ./installer_input.txt /home/muser/install/installer_input.txt
 RUN \
   cd /home/muser/install && \
   unzip *matlab*$MATLAB_VERSION*.zip -d /home/muser/install/matlab-files && \
-  echo "fileInstallationKey=${MATLAB_FILE_KEY}" >> /home/muser/install/installer_input.txt && \ 
+  echo "fileInstallationKey=${MATLAB_FILE_KEY}" >> /home/muser/install/installer_input.txt && \
+  echo "destinationFolder=${MATLAB_INSTALLED_ROOT}" >> /home/muser/install/installer_input.txt && \
   cd matlab-files && \
   ./install -inputFile /home/muser/install/installer_input.txt && \
   rm /tmp/mathworks_muser.log && \
   rm -R /home/muser/install
 #Jupyter Notebook Install
 RUN \
-  cd /home/muser/MATLAB/extern/engines/python && \
+  cd ${MATLAB_INSTALLED_ROOT}/extern/engines/python && \
   python setup.py install --user && \
   pip install --user jupyter && \
   pip install --user git+https://github.com/imatlab/imatlab || echo "JUPYTER NOTEBOOK MATLAB ERROR: Skipping..." && \
@@ -58,7 +61,7 @@ RUN \
   chmod -R o+rx /home/muser/.local/lib && \
   chmod -R o+wx /home/muser/.local/share
 #Prepare Activation on boot
-COPY ./activate.ini /home/muser/activate.ini
+COPY ./activate.ini /home/muser/.activate.ini
 #Jupyter Notebook config
 COPY ./jupyter_notebook_config.py /etc/jupyter/jupyter_notebook_config.py
 
@@ -69,13 +72,15 @@ RUN chmod 4755 /startup
 LABEL maintainerName="Raphael Guzman" \
       maintainerEmail="raphael.h.guzman@gmail.com"
 ARG  MATLAB_VERSION
+ARG  MATLAB_INSTALLED_ROOT
 USER muser
+ENV  MATLAB_INSTALLED_ROOT=$MATLAB_INSTALLED_ROOT
 ENV  MATLAB_VERSION=$MATLAB_VERSION
 ENV HOME /home/muser
 ENV PYTHON_PIP_VERSION 19.1.1
 ENV PYTHON_VERSION 3.6.8
 ENV LANG C.UTF-8
-ENV PATH "/usr/local/bin:$PATH:/home/muser/MATLAB/bin:/home/muser/.local/bin"
+ENV PATH "/usr/local/bin:$PATH:${MATLAB_INSTALLED_ROOT}/bin:/home/muser/.local/bin"
 ENTRYPOINT ["/entrypoint.sh"]
 WORKDIR /home/muser
 CMD ["matlab","-h"]

@@ -6,7 +6,7 @@ x-R2018b: &R2018b
     - DISPLAY
     - MATLAB_LICENSE
     - MATLAB_USER
-    - JUPYTER_PASSWORD=matlab
+    - JUPYTER_PASSWORD=datajoint
 services:
   matlab:
     <<: *R2018b
@@ -15,11 +15,14 @@ services:
       # dockerfile: min.dockerfile
       dockerfile: gui.dockerfile
       args:
-        MATLAB_VERSION: $MATLAB_VERSION
-        MATLAB_FILE_KEY: $MATLAB_FILE_KEY
-        PY_VERSION: $PY_VERSION
+        - MATLAB_VERSION
+        - MATLAB_FILE_KEY
+        - PY_VERSION
+        - MATLAB_INSTALLED_ROOT
     # image: raphaelguzman/matlab:${MATLAB_VERSION}-MIN
     image: raphaelguzman/matlab:${MATLAB_VERSION}-GUI
+    # image: registry.vathes.com/datajoint/matlab:${MATLAB_VERSION}-MIN
+    # image: registry.vathes.com/datajoint/matlab:${MATLAB_VERSION}-GUI
     user: ${MATLAB_UID}:${MATLAB_GID}
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw

@@ -40,7 +40,7 @@
 ## Set the desired value for destinationFolder and 
 ## uncomment the line. 
 
-destinationFolder=/home/muser/MATLAB
+#destinationFolder=/home/muser/MATLAB
 
 ##
 ## SPECIFY FILE INSTALLATION KEY 

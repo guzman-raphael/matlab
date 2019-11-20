@@ -8,6 +8,8 @@ RUN cd / && go build startup.go
 FROM debian:stretch-slim as mat_build
 ARG  MATLAB_VERSION
 ARG  MATLAB_FILE_KEY
+ARG  MATLAB_INSTALLED_ROOT
+ENV  MATLAB_INSTALLED_ROOT=$MATLAB_INSTALLED_ROOT
 ENV  MATLAB_VERSION=$MATLAB_VERSION
 COPY ./entrypoint.sh /entrypoint.sh
 COPY --from=go_tmp /startup /startup
@@ -37,46 +39,47 @@ COPY ./installer_input.txt /home/muser/install/installer_input.txt
 RUN \
   cd /home/muser/install && \
   unzip *matlab*$MATLAB_VERSION*.zip -d /home/muser/install/matlab-files && \
-  echo "fileInstallationKey=${MATLAB_FILE_KEY}" >> /home/muser/install/installer_input.txt && \ 
+  echo "fileInstallationKey=${MATLAB_FILE_KEY}" >> /home/muser/install/installer_input.txt && \
+  echo "destinationFolder=${MATLAB_INSTALLED_ROOT}" >> /home/muser/install/installer_input.txt && \
   cd matlab-files && \
   ./install -inputFile /home/muser/install/installer_input.txt && \
   rm /tmp/mathworks_muser.log && \
   rm -R /home/muser/install
 RUN \
   #Remove Matlab bloat
-  rm -R /home/muser/MATLAB/help && \
-  rm -R /home/muser/MATLAB/cefclient || echo "MATLAB ERROR: cefclient not found. Skipping..." && \
-  rm -R /home/muser/MATLAB/toolbox/matlab/maps || echo "MATLAB ERROR: toolbox/matlab/maps not found. Skipping..." && \
-  sed -i '/toolbox\/matlab\/maps/d' /home/muser/MATLAB/toolbox/local/pathdef.m && \
-  rm -R /home/muser/MATLAB/toolbox/matlab/codetools && \
-  sed -i '/toolbox\/matlab\/codetools/d' /home/muser/MATLAB/toolbox/local/pathdef.m && \
-  rm -R /home/muser/MATLAB/bin/glnxa64/mkl.so && \
-  rm -R /home/muser/MATLAB/toolbox/shared && \
-  sed -i '/toolbox\/shared/d' /home/muser/MATLAB/toolbox/local/pathdef.m && \
-  rm -R /home/muser/MATLAB/ui && \
-  sed -i '/ui\//d' /home/muser/MATLAB/toolbox/local/pathdef.m && \
-  rm -R /home/muser/MATLAB/examples && \
-  sed -i '/examples\//d' /home/muser/MATLAB/toolbox/local/pathdef.m && \
-  rm -R /home/muser/MATLAB/java/jarext/jxbrowser-chromium && \
-  rm -R /home/muser/MATLAB/sys/jxbrowser && \
-  rm -R /home/muser/MATLAB/toolbox/matlab/datatools || echo "MATLAB ERROR: toolbox/matlab/datatools not found. Skipping..." && \
-  sed -i '/toolbox\/matlab\/datatools/d' /home/muser/MATLAB/toolbox/local/pathdef.m && \
-  rm -R /home/muser/MATLAB/toolbox/matlab/appdesigner && \
-  sed -i '/toolbox\/matlab\/appdesigner/d' /home/muser/MATLAB/toolbox/local/pathdef.m && \
-  rm -R /home/muser/MATLAB/toolbox/matlab/demos && \
-  sed -i '/toolbox\/matlab\/demos/d' /home/muser/MATLAB/toolbox/local/pathdef.m && \
-  rm -R /home/muser/MATLAB/toolbox/matlab/uitools && \
-  sed -i '/toolbox\/matlab\/uitools/d' /home/muser/MATLAB/toolbox/local/pathdef.m && \
-  rm -R /home/muser/MATLAB/toolbox/matlab/system && \
-  sed -i '/toolbox\/matlab\/system/d' /home/muser/MATLAB/toolbox/local/pathdef.m && \
-  rm -R /home/muser/MATLAB/toolbox/coder || echo "MATLAB ERROR: toolbox/coder not found. Skipping..." && \
-  sed -i '/toolbox\/coder/d' /home/muser/MATLAB/toolbox/local/pathdef.m
+  rm -R ${MATLAB_INSTALLED_ROOT}/help && \
+  rm -R ${MATLAB_INSTALLED_ROOT}/cefclient || echo "MATLAB ERROR: cefclient not found. Skipping..." && \
+  rm -R ${MATLAB_INSTALLED_ROOT}/toolbox/matlab/maps || echo "MATLAB ERROR: toolbox/matlab/maps not found. Skipping..." && \
+  sed -i '/toolbox\/matlab\/maps/d' ${MATLAB_INSTALLED_ROOT}/toolbox/local/pathdef.m && \
+  rm -R ${MATLAB_INSTALLED_ROOT}/toolbox/matlab/codetools && \
+  sed -i '/toolbox\/matlab\/codetools/d' ${MATLAB_INSTALLED_ROOT}/toolbox/local/pathdef.m && \
+  rm -R ${MATLAB_INSTALLED_ROOT}/bin/glnxa64/mkl.so && \
+  rm -R ${MATLAB_INSTALLED_ROOT}/toolbox/shared && \
+  sed -i '/toolbox\/shared/d' ${MATLAB_INSTALLED_ROOT}/toolbox/local/pathdef.m && \
+  rm -R ${MATLAB_INSTALLED_ROOT}/ui && \
+  sed -i '/ui\//d' ${MATLAB_INSTALLED_ROOT}/toolbox/local/pathdef.m && \
+  rm -R ${MATLAB_INSTALLED_ROOT}/examples && \
+  sed -i '/examples\//d' ${MATLAB_INSTALLED_ROOT}/toolbox/local/pathdef.m && \
+  rm -R ${MATLAB_INSTALLED_ROOT}/java/jarext/jxbrowser-chromium && \
+  rm -R ${MATLAB_INSTALLED_ROOT}/sys/jxbrowser && \
+  rm -R ${MATLAB_INSTALLED_ROOT}/toolbox/matlab/datatools || echo "MATLAB ERROR: toolbox/matlab/datatools not found. Skipping..." && \
+  sed -i '/toolbox\/matlab\/datatools/d' ${MATLAB_INSTALLED_ROOT}/toolbox/local/pathdef.m && \
+  rm -R ${MATLAB_INSTALLED_ROOT}/toolbox/matlab/appdesigner && \
+  sed -i '/toolbox\/matlab\/appdesigner/d' ${MATLAB_INSTALLED_ROOT}/toolbox/local/pathdef.m && \
+  rm -R ${MATLAB_INSTALLED_ROOT}/toolbox/matlab/demos && \
+  sed -i '/toolbox\/matlab\/demos/d' ${MATLAB_INSTALLED_ROOT}/toolbox/local/pathdef.m && \
+  rm -R ${MATLAB_INSTALLED_ROOT}/toolbox/matlab/uitools && \
+  sed -i '/toolbox\/matlab\/uitools/d' ${MATLAB_INSTALLED_ROOT}/toolbox/local/pathdef.m && \
+  rm -R ${MATLAB_INSTALLED_ROOT}/toolbox/matlab/system && \
+  sed -i '/toolbox\/matlab\/system/d' ${MATLAB_INSTALLED_ROOT}/toolbox/local/pathdef.m && \
+  rm -R ${MATLAB_INSTALLED_ROOT}/toolbox/coder || echo "MATLAB ERROR: toolbox/coder not found. Skipping..." && \
+  sed -i '/toolbox\/coder/d' ${MATLAB_INSTALLED_ROOT}/toolbox/local/pathdef.m
   #R2016a
-  # rm -R /home/muser/MATLAB/sys/opengl && \
-  # rm /home/muser/MATLAB/toolbox/local/hgrc.m && \
-  # rm /home/muser/MATLAB/bin/glnxa64/libmwhg.so 
+  # rm -R ${MATLAB_INSTALLED_ROOT}/sys/opengl && \
+  # rm ${MATLAB_INSTALLED_ROOT}/toolbox/local/hgrc.m && \
+  # rm ${MATLAB_INSTALLED_ROOT}/bin/glnxa64/libmwhg.so 
 #Prepare Activation on boot
-COPY ./activate.ini /home/muser/activate.ini
+COPY ./activate.ini /home/muser/.activate.ini
 
 #Squashed Final Image
 FROM scratch
@@ -85,10 +88,12 @@ RUN chmod 4755 /startup
 LABEL maintainerName="Raphael Guzman" \
       maintainerEmail="raphael.h.guzman@gmail.com"
 ARG  MATLAB_VERSION
+ARG  MATLAB_INSTALLED_ROOT
 USER muser
+ENV  MATLAB_INSTALLED_ROOT=$MATLAB_INSTALLED_ROOT
 ENV  MATLAB_VERSION=$MATLAB_VERSION
 ENV HOME /home/muser
-ENV PATH "$PATH:/home/muser/MATLAB/bin"
+ENV PATH "$PATH:${MATLAB_INSTALLED_ROOT}/bin"
 ENTRYPOINT ["/entrypoint.sh"]
 WORKDIR /home/muser
 CMD ["matlab","-h"]
