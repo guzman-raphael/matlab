@@ -25,6 +25,6 @@ c.NotebookApp.port = 8888
 
 c.NotebookApp.default_url = '/tree'
 
-c.NotebookApp.notebook_dir = '/home/muser'
+c.NotebookApp.notebook_dir = getenv('HOME', '/home/muser')
 
-c.FileContentsManager.root_dir = '/home/muser'
+c.FileContentsManager.root_dir = getenv('HOME', '/home/muser')
