@@ -21,8 +21,6 @@ services:
         - MATLAB_INSTALLED_ROOT
     # image: raphaelguzman/matlab:${MATLAB_VERSION}-MIN
     image: raphaelguzman/matlab:${MATLAB_VERSION}-GUI
-    # image: registry.vathes.com/datajoint/matlab:${MATLAB_VERSION}-MIN
-    # image: registry.vathes.com/datajoint/matlab:${MATLAB_VERSION}-GUI
     user: ${MATLAB_UID}:${MATLAB_GID}
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
