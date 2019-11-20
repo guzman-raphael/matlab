@@ -16,7 +16,7 @@ See `docker-compose.yml` for instructions on how to properly start it with `dock
 
 * MATLAB_HOSTID=xx:xx:xx:xx:xx:xx `MAC Address supplied to Mathworks as HostID associated with license`
 
-* MATLAB_USER=muser               `Application user associated with license. All images built with this user`
+* MATLAB_USER=muser               `System/ComputerLogin user associated with license. Default is muser`
 
 * MATLAB_UID=1000                 `Any UID of your docker host`
 

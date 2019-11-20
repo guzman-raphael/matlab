@@ -49,7 +49,7 @@ RUN \
   echo "destinationFolder=${MATLAB_INSTALLED_ROOT}" >> /home/muser/install/installer_input.txt && \
   cd matlab-files && \
   ./install -inputFile /home/muser/install/installer_input.txt && \
-  rm /tmp/mathworks_muser.log && \
+  rm /tmp/mathworks_docker.log && \
   rm -R /home/muser/install
 #Jupyter Notebook Install
 RUN \
