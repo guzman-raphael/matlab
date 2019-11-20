@@ -79,7 +79,7 @@ agreeToLicense=yes
 ## Set the desired value for outputFile and 
 ## uncomment the line.
 
-outputFile=/tmp/mathworks_muser.log
+outputFile=/tmp/mathworks_docker.log
 
 ## SPECIFY INSTALLER MODE 
 ## 
