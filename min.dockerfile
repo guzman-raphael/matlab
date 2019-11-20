@@ -12,6 +12,7 @@ ARG  MATLAB_INSTALLED_ROOT
 ENV  MATLAB_INSTALLED_ROOT=$MATLAB_INSTALLED_ROOT
 ENV  MATLAB_VERSION=$MATLAB_VERSION
 COPY ./entrypoint.sh /entrypoint.sh
+COPY ./installer_input.txt /home/muser/install/installer_input.txt
 COPY --from=go_tmp /startup /startup
 RUN \
 # Install Core dependencies
@@ -28,6 +29,7 @@ RUN \
   chown ${uid}:${gid} -R /src && \
 # Setup entrypoint and startup
   chmod +x /entrypoint.sh && \
+  chown muser:muser /home/muser/install/installer_input.txt && \
   chmod 4755 /startup
 
 # USER=MUSER
@@ -35,7 +37,6 @@ USER muser
 # Install base Matlab
 RUN mkdir -p /home/muser/install/matlab-files
 COPY ./installers/*$MATLAB_VERSION* /home/muser/install/
-COPY ./installer_input.txt /home/muser/install/installer_input.txt
 RUN \
   cd /home/muser/install && \
   unzip *matlab*$MATLAB_VERSION*.zip -d /home/muser/install/matlab-files && \
