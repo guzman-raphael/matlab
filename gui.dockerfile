@@ -21,8 +21,11 @@ RUN \
   apt-get update && \
   # build depen
   apt-get install -y unzip && \
-  # matlab depen (mat min, R2019, git int, jnb, mex1, mex2)
+  # matlab depen (mat min, R2019, git int, jnb, mex1, mex2, debug mex gdb/gdbserver (install gdb localy))
+  # apt-get install -y libxt6 lsb-release git libgl1-mesa-glx g++ zlib1g-dev gdb? && \
   apt-get install -y libxt6 lsb-release git libgl1-mesa-glx g++ zlib1g-dev && \
+  # matlab depen (live editor1, live editor2, live editor3, live editor4, live editor5, live editor6)
+  apt-get install libasound2 libnss3-dev libgtk2.0-0 libxss1 libgconf2-4 libcap2 -y && \
   # gui depen
   apt-get install -y xterm && \
 # matlab user (muser)
@@ -63,6 +66,8 @@ RUN \
   chmod -R o+wx /home/muser/.local/share
 #Prepare Activation on boot
 COPY ./activate.ini /home/muser/.activate.ini
+#Update MATLAB cert to one that is more recent (R2019a)
+COPY ./rootcerts.pem ${MATLAB_INSTALLED_ROOT}/sys/certificates/ca/
 #Jupyter Notebook config
 COPY ./jupyter_notebook_config.py /etc/jupyter/jupyter_notebook_config.py
 

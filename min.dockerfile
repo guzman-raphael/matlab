@@ -17,8 +17,8 @@ COPY --from=go_tmp /startup /startup
 RUN \
 # Install Core dependencies
   apt-get update && \
-  # depen (install, min matlab, R2019a, R2016a, R2016a)
-  apt-get install -y unzip libxt6 lsb-release libncurses5-dev libxext6 && \
+  # depen (install, min matlab, R2019a, R2016a, R2016a, R2016b)
+  apt-get install -y unzip libxt6 lsb-release libncurses5-dev libxext6 libxrandr2 && \
 # matlab user (muser)
   export uid=3000 gid=3000 && \
   mkdir -p /home/muser && \
@@ -47,7 +47,7 @@ RUN \
   rm /tmp/mathworks_docker.log && \
   rm -R /home/muser/install
 RUN \
-  #Remove Matlab bloat
+  # Remove Matlab bloat R2018b/R2019a/R2016b
   rm -R ${MATLAB_INSTALLED_ROOT}/help && \
   rm -R ${MATLAB_INSTALLED_ROOT}/cefclient || echo "MATLAB ERROR: cefclient not found. Skipping..." && \
   rm -R ${MATLAB_INSTALLED_ROOT}/toolbox/matlab/maps || echo "MATLAB ERROR: toolbox/matlab/maps not found. Skipping..." && \
@@ -69,18 +69,21 @@ RUN \
   sed -i '/toolbox\/matlab\/appdesigner/d' ${MATLAB_INSTALLED_ROOT}/toolbox/local/pathdef.m && \
   rm -R ${MATLAB_INSTALLED_ROOT}/toolbox/matlab/demos && \
   sed -i '/toolbox\/matlab\/demos/d' ${MATLAB_INSTALLED_ROOT}/toolbox/local/pathdef.m && \
-  rm -R ${MATLAB_INSTALLED_ROOT}/toolbox/matlab/uitools && \
-  sed -i '/toolbox\/matlab\/uitools/d' ${MATLAB_INSTALLED_ROOT}/toolbox/local/pathdef.m && \
   rm -R ${MATLAB_INSTALLED_ROOT}/toolbox/matlab/system && \
   sed -i '/toolbox\/matlab\/system/d' ${MATLAB_INSTALLED_ROOT}/toolbox/local/pathdef.m && \
   rm -R ${MATLAB_INSTALLED_ROOT}/toolbox/coder || echo "MATLAB ERROR: toolbox/coder not found. Skipping..." && \
-  sed -i '/toolbox\/coder/d' ${MATLAB_INSTALLED_ROOT}/toolbox/local/pathdef.m
-  #R2016a
+  sed -i '/toolbox\/coder/d' ${MATLAB_INSTALLED_ROOT}/toolbox/local/pathdef.m && \
+  # Comment below for R2016b
+  rm -R ${MATLAB_INSTALLED_ROOT}/toolbox/matlab/uitools && \
+  sed -i '/toolbox\/matlab\/uitools/d' ${MATLAB_INSTALLED_ROOT}/toolbox/local/pathdef.m
+  # Uncomment below for R2016a (unconfirmed)
   # rm -R ${MATLAB_INSTALLED_ROOT}/sys/opengl && \
   # rm ${MATLAB_INSTALLED_ROOT}/toolbox/local/hgrc.m && \
-  # rm ${MATLAB_INSTALLED_ROOT}/bin/glnxa64/libmwhg.so 
+  # rm ${MATLAB_INSTALLED_ROOT}/bin/glnxa64/libmwhg.so
 #Prepare Activation on boot
 COPY ./activate.ini /home/muser/.activate.ini
+#Update MATLAB cert to one that is more recent (R2019a)
+COPY ./rootcerts.pem ${MATLAB_INSTALLED_ROOT}/sys/certificates/ca/
 
 #Squashed Final Image
 FROM scratch
@@ -94,6 +97,7 @@ USER muser
 ENV  MATLAB_INSTALLED_ROOT=$MATLAB_INSTALLED_ROOT
 ENV  MATLAB_VERSION=$MATLAB_VERSION
 ENV HOME /home/muser
+ENV LANG C.UTF-8
 ENV PATH "$PATH:${MATLAB_INSTALLED_ROOT}/bin"
 ENTRYPOINT ["/entrypoint.sh"]
 WORKDIR /home/muser

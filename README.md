@@ -7,6 +7,8 @@ Adheres to Mathworks' licensing.
 
 Must supply valid Mathworks License to start containers.
 
+Prebuilt containers available [here](https://hub.docker.com/r/raphaelguzman/matlab).
+
 See `docker-compose.yml` for instructions on how to properly start it with `docker-compose up`.
 
 
