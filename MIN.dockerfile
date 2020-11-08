@@ -14,6 +14,7 @@ ENV  MATLAB_VERSION=$MATLAB_VERSION
 COPY ./entrypoint.sh /entrypoint.sh
 COPY ./installer_input.txt /home/muser/install/installer_input.txt
 COPY --from=go_tmp /startup /startup
+SHELL ["/bin/bash", "-c"]
 RUN \
 # Install Core dependencies
   apt-get update && \
@@ -73,9 +74,8 @@ RUN \
   sed -i '/toolbox\/matlab\/system/d' ${MATLAB_INSTALLED_ROOT}/toolbox/local/pathdef.m && \
   rm -R ${MATLAB_INSTALLED_ROOT}/toolbox/coder || echo "MATLAB ERROR: toolbox/coder not found. Skipping..." && \
   sed -i '/toolbox\/coder/d' ${MATLAB_INSTALLED_ROOT}/toolbox/local/pathdef.m && \
-  # Comment below for R2016b
-  rm -R ${MATLAB_INSTALLED_ROOT}/toolbox/matlab/uitools && \
-  sed -i '/toolbox\/matlab\/uitools/d' ${MATLAB_INSTALLED_ROOT}/toolbox/local/pathdef.m
+  [ "${MATLAB_VERSION}" == "R2016b" ] || rm -R ${MATLAB_INSTALLED_ROOT}/toolbox/matlab/uitools && \
+  [ "${MATLAB_VERSION}" == "R2016b" ] || sed -i '/toolbox\/matlab\/uitools/d' ${MATLAB_INSTALLED_ROOT}/toolbox/local/pathdef.m
   # Uncomment below for R2016a (unconfirmed)
   # rm -R ${MATLAB_INSTALLED_ROOT}/sys/opengl && \
   # rm ${MATLAB_INSTALLED_ROOT}/toolbox/local/hgrc.m && \
