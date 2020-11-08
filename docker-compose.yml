@@ -1,33 +1,30 @@
-# To convert license to env var use this command: 
-# echo \"$(sed ':a;N;$!ba;s|\t|\\t|g' /github/raphael/matlab-docker-act/licenses/license_R2016a.lic | sed 's| |\\ |g' | sed 's|"|\\"|g' | sed ':a;N;$!ba;s|\n|\\n|g')\"
+# docker-compose up --build
 version: '2.4'
-x-R2018b: &R2018b
-  environment:
-    - DISPLAY
-    - MATLAB_LICENSE
-    - MATLAB_USER
-    - JUPYTER_PASSWORD=matlab
 services:
   matlab:
-    <<: *R2018b
-    build:
+    build: # only necessary if rebuilding image
       context: .
-      # dockerfile: min.dockerfile
-      dockerfile: gui.dockerfile
+      dockerfile: ${MATLAB_IMAGE_TYPE}.dockerfile
       args:
         - MATLAB_VERSION
         - MATLAB_FILE_KEY
         - PY_VERSION
         - MATLAB_INSTALLED_ROOT
-    # image: raphaelguzman/matlab:${MATLAB_VERSION}-MIN
-    image: raphaelguzman/matlab:${MATLAB_VERSION}-GUI
+    image: raphaelguzman/matlab:${MATLAB_VERSION}-${MATLAB_IMAGE_TYPE}
+    environment:
+      - DISPLAY # only necessary for GUI image
+      - MATLAB_LICENSE # Must specify MATLAB_LICENSE variable or license file volume mount
+      - MATLAB_USER
+      - JUPYTER_PASSWORD=matlab # only necessary for GUI image
     user: ${MATLAB_UID}:${MATLAB_GID}
     volumes:
-      - /tmp/.X11-unix:/tmp/.X11-unix:rw
-    ports:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw # only necessary for GUI image
+      # - ./licenses/license_${MATLAB_VERSION}.lic:/home/muser/license_${MATLAB_VERSION}.lic:ro # Must specify MATLAB_LICENSE variable or license file volume mount
+    ports: # only necessary for GUI image
       - "8888:8888"
     mac_address: $MATLAB_HOSTID
-    command: > 
-      /bin/bash -c "
-        jupyter notebook || tail -f /dev/null;
-      "
+    command:
+      - /bin/bash
+      - -c
+      - |
+        jupyter notebook || tail -f /dev/null

@@ -3,3 +3,5 @@ licenses/
 .env
 old.*
 min_curr.*
+.vscode
+*.tar.gz
