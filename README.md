@@ -103,6 +103,6 @@ matlab/ --------------------------- Root directory
 ┗ startup.go ---------------------- Utility to resolve permissions and update container user
 ```
 
-## Travis CI Integration
+## GitHub Actions CI Integration
 
-For a reference of how this container may be used in Continuous Integration with Travis, see my repo for [compareVersions.m](https://github.com/guzman-raphael/compareVersions).
+For a reference of how this container may be used in Continuous Integration with GitHub Actions, see my repo for [compareVersions.m](https://github.com/guzman-raphael/compareVersions).
